@@ -63,7 +63,7 @@ socket.on("updateUserList", function(users){
     var ol = jQuery("<ol></ol>");
 
     users.forEach(function (user){
-        ol.append(jQuery("<li></li>").text(user));
+        ol.append(jQuery("<li></li>").attr("id","user").text(user));
     });
 
     jQuery("#users").html(ol);
@@ -101,3 +101,9 @@ locationButton.on("click", function() {
         locationButton.removeAttr("disabled").text("Send location");
     });
 });
+
+jQuery("#users").on("click","li#user", function(){
+    var user = jQuery(this).text();
+    jQuery("[name=message]").val(`@${user} `);
+});
+
