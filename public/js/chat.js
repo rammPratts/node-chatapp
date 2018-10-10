@@ -19,7 +19,7 @@ function scrollToBottom(){
 function checkIfPrivate(text){
     textArray = text.split("");
 
-    if(text.array[0] === "@"){
+    if(textArray[0] == "@"){
         return true;
     }else{
         return false;
@@ -108,7 +108,7 @@ jQuery("#message-form").on("submit", function(e){
     e.preventDefault();
 
     var messageTextBox = jQuery("[name=message]");
-    if(checkIfPrivate){
+    if(checkIfPrivate(messageTextBox.val())){
        var message = splitPrivateMessage(messageTextBox.val());
        socket.emit("createPrivateMessage",{
            to: message[0],
