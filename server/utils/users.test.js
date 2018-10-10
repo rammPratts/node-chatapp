@@ -77,6 +77,24 @@ describe("Users", () => {
         expect(res).toBeFalsy();
     });
 
+    it("should find user by name",() => {
+        var user = {
+            id: "3",
+            name: "Jennifer",
+            room: "ChatApp"
+        }
+        var res = users.getUserByName("Jennifer");
+
+        expect(res).toEqual(user);
+    });
+
+    
+    it("should not find user",() => {
+        var res = users.getUserByName("Carlos");
+
+        expect(res).toBeFalsy();
+    });
+
     it("should return names for ChatApp", () =>{
         var userList = users.getUserList("ChatApp");
 

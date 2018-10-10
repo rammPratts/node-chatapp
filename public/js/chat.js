@@ -16,6 +16,26 @@ function scrollToBottom(){
     }
 }
 
+function checkIfPrivate(text){
+    textArray = text.split("");
+
+    if(text.array[0] === "@"){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function splitPrivateMessage(text){
+     var textArray = text.split(" ");
+     var user = textArray[0].split("");
+     user.shift();
+     user = user.join("");
+     textArray.shift();
+     var message = textArray.join(" ");
+    return [user, message]
+}
+
 socket.on("connect", function() {
     var params = jQuery.deparam(window.location.search);
 
@@ -54,6 +74,21 @@ socket.on("newLocationMessage", function(message){
     scrollToBottom();
 });
 
+socket.on("newPrivateMessage", function(message){
+    var formattedTime = moment(message.cratedAt).format("HH:mm");
+    var template = jQuery("#private-message-template").html();
+    var html = Mustache.render(template,{
+        from: message.from,
+        to: message.to,
+        text: message.text,
+        time: formattedTime
+    });
+    if(socket.id === message.senderID || socket.id === message.destinyID){    
+        jQuery("#messages").append(html);  
+        scrollToBottom();
+    }
+});
+
 socket.on("disconnect", function() {
     console.log("Disconnected from server");
 });
@@ -73,12 +108,21 @@ jQuery("#message-form").on("submit", function(e){
     e.preventDefault();
 
     var messageTextBox = jQuery("[name=message]");
-
-    socket.emit("createMessage", {
-        text: messageTextBox.val()
-    }, function(){
-        messageTextBox.val("");
-    })
+    if(checkIfPrivate){
+       var message = splitPrivateMessage(messageTextBox.val());
+       socket.emit("createPrivateMessage",{
+           to: message[0],
+           text: message[1]
+       }, function(){
+           messageTextBox.val("");
+       })
+    }else{
+        socket.emit("createMessage", {
+            text: messageTextBox.val()
+        }, function(){
+            messageTextBox.val("");
+        })
+    }
 });
 
 var locationButton = jQuery("#send-location");

@@ -16,4 +16,15 @@ var generateLocationMessage = (from, latitude, longitude) => {
     }
 };
 
-module.exports = {generateMessage, generateLocationMessage};
+var generatePrivateMessage = (from, to,senderID, destinyID, text) => {
+    return{
+        from,
+        to,
+        senderID,
+        destinyID,
+        text,
+        createdAt: moment().valueOf()
+    }
+}
+
+module.exports = {generateMessage, generateLocationMessage, generatePrivateMessage};
